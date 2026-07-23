@@ -72,8 +72,7 @@ def _sample_weights(labels, lang_id=0.0):
     n_hold = n - n_eot
     w_eot = n / (2.0 * max(n_eot, 1))
     w_hold = n / (2.0 * max(n_hold, 1))
-    # Hold boost only for pure-Hindi fits — hurt unified EN+HI EOTs before.
-    if lang_id >= 0.75:
+    if lang_id >= 0.5:
         w_hold *= 1.15
     return np.array(
         [w_eot if lab == "eot" else w_hold for lab in labels],
@@ -132,8 +131,8 @@ def predict_proba_bundle(bundle, X, rise, fall=None):
     gamma = float(bundle.get("fall_gamma", 0.0))
     if gamma > 0 and fall is not None:
         fall = np.asarray(fall, dtype=np.float64)
-        # Soft fall on first pause; stronger fall boost on later pauses (true finals).
-        gamma_eff = np.where(first, gamma * 0.40, gamma * 1.25)
+        # Soft fall on first pause; full fall boost on later pauses.
+        gamma_eff = np.where(first, gamma * 0.40, gamma)
         p = p * (1.0 + gamma_eff * np.clip(fall / 80.0, -0.3, 0.8))
     return np.clip(p, 0.0, 1.0)
 

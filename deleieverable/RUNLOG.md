@@ -205,6 +205,24 @@ Why: EN **−15 ms** vs #27 with AUC up; HI delay **unchanged** (AUC +0.004). Ke
 Changed: merged EN+HI into one `predictions.csv` (`turn_id,pause_index,p_eot`, 496 rows) and copied graded files into `deleieverable/`.  
 Why: single submission CSV for both language folders; keep SUMMARY / predict / RUNLOG / NOTES / predictions together. Reconfirmed scores unchanged vs #29 (EN **1000** / HI **783**).
 
+## 31. Tried weight + late-fall tweak — EN **1030** / HI **772** — **REJECTED for ship**
+
+Changed: drop unified hold-weight boost; late-pause fall ×1.25.  
+Why: HI improved **783→772** (best HI alone) but EN worsened **1000→1030**; combined delay sum worse (1802 vs 1783). **Reverted** to #29 gates. Logged as best-HI-alone record, not current ship.
+
+---
+
+## Best-of records
+
+| Record | Delay | Where |
+|--------|------:|-------|
+| ★ Best combined handout (ship) | EN **1000** / HI **783** | #29 |
+| Best HI alone (not shipped) | **772** | #31 rejected |
+| Best HI honest | **840** | pre-unified OOF |
+| Best EN honest freeze | **1300** | protocol |
+
+**Current ship:** EN **1000** / HI **783** → `starter/predictions*.csv` + `deleieverable/`.
+
 ---
 
 ## Next append rule

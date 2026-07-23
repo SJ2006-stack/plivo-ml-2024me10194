@@ -1,39 +1,21 @@
 # End-of-Turn Detection — Situation Report
 
-**Updated:** 2026-07-23 ~22:50  
-**Ship:** `models/unified.joblib` → `predictions.csv` / `predictions_hi.csv`
+**Updated:** 2026-07-23 ~22:52  
+**Ship:** EN **1000 ms** / HI **783 ms** (`models/unified.joblib`)
 
 ## Best-of records
 
-| Record | Delay | Notes |
-|--------|------:|-------|
-| **Best HI handout (current ship)** | **772 ms** | AUC 0.861 · beats silence 850 |
-| Best EN handout | **1000 ms** | AUC 0.838 · gate-only checkpoint |
-| Current EN (shipped with HI-best) | **1030 ms** | Hindi-priority tradeoff |
-| Best HI honest | **840 ms** | pre-unified OOF |
-| Best EN honest freeze | **1300 ms** | protocol @ val-frozen |
+| Record | Score | Status |
+|--------|------:|--------|
+| ★ Combined handout (shipped) | EN **1000** / HI **783** | Current |
+| Best HI alone | **772** | Tried; rejected (EN→1030) |
+| Best HI honest | **840** | OOF |
+| Best EN honest freeze | **1300** | Protocol |
 
-## Deliverables
+## Deliverables (`deleieverable/`)
 
-| # | Item | Status |
-|---|------|--------|
-| 1 | `SUMMARY.html` | Done — best-of + current ship |
-| 2 | `predict.py` | Done — `unified.joblib` |
-| 3 | Predictions | Done — regenerated |
-| 4 | `RUNLOG.md` | Done — through #30 |
-| 5 | `NOTES.md` | Done |
+SUMMARY.html · predict.py · predictions.csv (496) · predictions_hi.csv · RUNLOG.md · NOTES.md
 
-## What changed last
+## Last experiment
 
-1. First-pause rise/fall gates → EN **1000** / HI 783.  
-2. Drop unified hold-weight boost + late-pause fall ×1.25 → HI **772** (EN 1030). Kept for Hindi-heavy hidden test.
-
-## Commands
-
-```bash
-cd starter
-python3 predict.py --data_dir ../eot_data/english --out predictions.csv
-python3 predict.py --data_dir ../eot_data/hindi   --out predictions_hi.csv
-python3 score.py --data_dir ../eot_data/english --pred predictions.csv
-python3 score.py --data_dir ../eot_data/hindi   --pred predictions_hi.csv
-```
+Weight/late-fall tweak got HI **772** but EN **1030** — worse combined → **reverted** to first-pause gates (#29).

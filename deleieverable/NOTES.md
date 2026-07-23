@@ -1,8 +1,8 @@
 # NOTES
 
-Our model decides end-of-turn from **causal Tier-1 prosody only**: for each pause it uses audio from time 0 up to `pause_start` (never pause duration or post-pause audio) and extracts F0 via `librosa.piptrack` (`fmin=50`), energy decay, final lengthening / speaking-rate, relative final pitch (fall vs rise), spectral shape, and turn-structure features (`pause_index`, IPI).  
-Those features feed a shrunk LR + shallow HistGradientBoosting ensemble trained as one **unified EN+HI** model on the full handout (`models/unified.joblib`), with light first-pause gates (soften rise; cut fall boost on `pause_index==0`), scored only through `predict.py`.  
-All-time best handout ship is **EN 1000 ms** (AUC 0.838) and **HI 783 ms** (AUC 0.864), pause-acc@0.5 ≈ **0.76** — Hindi beats silence **850 ms** on the labeled set, but those scores are in-sample.  
-Honest bars are weaker: protocol @ val-frozen EN **1300 ms** / HI **1600 ms**, and the best trusted Hindi delay remains pre-unified OOF **~840 ms**.  
-It still fails on phrase-final first-pause holds, mid-turn completion-like holds outranking true EOTs, short rising Hindi EOTs, and over-conservative Hindi OP freezes.  
-With one more day we would recalibrate Hindi thresholds on val, finish listening-driven gates, and only advertise OOF / 60/20/20 numbers — never train-folder delay as the grade.
+Our model decides end-of-turn from **causal Tier-1 prosody only**: for each pause it uses audio from time 0 up to `pause_start` (never pause duration or post-pause audio) and extracts F0 via `librosa.piptrack` (`fmin=50`), energy decay, lengthening / rate, relative final pitch, spectral shape, and turn-structure features.  
+Those features feed LR + shallow HGB trained as one **unified EN+HI** model on the full handout (`models/unified.joblib`), with first-pause rise/fall gates; `predict.py` loads the saved model with no refit.  
+**Best shipped handout:** English **1000 ms** (AUC 0.838) and Hindi **783 ms** (AUC 0.864), both beating silence; a Hindi-only push to **772 ms** hurt English to 1030 so we kept the combined best.  
+Honest holdout bars remain weaker: protocol freeze EN **1300** / HI **1600**; best trusted Hindi delay is still pre-unified OOF **~840 ms**.  
+Typical errors: phrase-final first-pause holds scored as EOT, mid-turn holds outranking the true end, and short rising Hindi EOTs under-scored before the rise gate.  
+With one more day we would improve Hindi delay without regressing English, and only claim OOF / 60/20/20 numbers as the grade.
