@@ -135,15 +135,13 @@ def predict_proba_bundle(bundle, X, rise, fall=None):
         gamma_eff = np.where(first, gamma * 0.40, gamma)
         p = p * (1.0 + gamma_eff * np.clip(fall / 80.0, -0.3, 0.8))
 
-    # Niche Hindi-only nudge (lang_id feature col 7): pull true finals over thr earlier.
-    # Skip first-pause + rise>fall (classic phrase-final false cutoffs).
+    # Niche Hindi-only: multiplicative nudge on safe rows (skip first+rise>fall).
     if X.ndim == 2 and X.shape[1] > 7 and fall is not None and rise is not None:
         hi = X[:, 7] >= 0.5
         fall_a = np.asarray(fall, dtype=np.float64)
         rise_a = np.asarray(rise, dtype=np.float64)
-        safe = hi & ((~first) | (fall_a >= rise_a))
-        boost = 0.055 * np.clip(fall_a / 70.0, 0.0, 1.0)
-        p = np.where(safe, np.clip(p + boost, 0.0, 1.0), p)
+        safe = hi & ((~first) | (fall_a > rise_a + 5.0))
+        p = np.where(safe, np.clip(p * 1.10, 0.0, 1.0), p)
 
     return np.clip(p, 0.0, 1.0)
 

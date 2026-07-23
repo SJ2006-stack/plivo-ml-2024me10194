@@ -55,7 +55,7 @@
   <div class="wrap">
     <header>
       <div class="kicker">Plivo ML · EOT · all-time best ship · deleieverable pack</div>
-      <h1>Causal unified prosody endpointing — EN 1000 ms / HI 783 ms on handout</h1>
+      <h1>Causal unified prosody endpointing — EN 1000 ms / HI 781 ms on handout</h1>
       <p class="lede">
         From-scratch pause classifier: <code>p_eot</code> from audio only up to <code>pause_start</code>.
         Current best ship is full-data <strong>unified EN+HI</strong> LR+HGB with <code>piptrack</code>
@@ -71,8 +71,8 @@
       </div>
       <div class="stat">
         <div class="label">★ Handout HI (current best)</div>
-        <div class="value ok">783 ms</div>
-        <div class="sub">AUC 0.864 · beats silence 850 · in-sample</div>
+        <div class="value ok">781 ms</div>
+        <div class="sub">AUC 0.8574 · beats silence 850 · in-sample</div>
       </div>
       <div class="stat">
         <div class="label">Best honest HI (OOF)</div>
@@ -120,7 +120,7 @@
         <tr><td>In-sample Tier-1 (INVALID)</td><td>298</td><td>398</td><td><span class="tag invalid">No</span></td></tr>
         <tr><td>Pre-unified 5-fold OOF</td><td>1229</td><td><strong>840</strong></td><td><span class="tag trust">Best honest HI</span></td></tr>
         <tr><td>Unified protocol @ val-frozen</td><td>1300</td><td>1600</td><td><span class="tag trust">Yes</span></td></tr>
-        <tr><td>★ Full-data unified + gates</td><td><strong>1000</strong></td><td><strong>783</strong></td><td><span class="tag invalid">In-sample ship</span></td></tr>
+        <tr><td>★ Full-data unified + gates</td><td><strong>1000</strong></td><td><strong>781</strong></td><td><span class="tag invalid">In-sample ship</span></td></tr>
       </tbody>
     </table>
 
@@ -132,7 +132,7 @@
       </div>
       <div class="panel">
         <h3>Hindi</h3>
-        <p>Silence is <strong>850 ms</strong>. Handout ship reaches <strong>783 ms</strong> (AUC 0.86). Honest OOF best is <strong>~840</strong> — still the generalization target. We beat status quo on English delay and Hindi handout delay/ranking; honest Hindi freeze remains the open gap.</p>
+        <p>Silence is <strong>850 ms</strong>. Handout ship reaches <strong>781 ms</strong> (AUC 0.857). Honest OOF best is <strong>~840</strong> — still the generalization target. We beat status quo on English delay and Hindi handout delay/ranking; honest Hindi freeze remains the open gap.</p>
       </div>
     </div>
 
@@ -179,14 +179,14 @@
     </ol>
 
     <footer>
-      All-time best handout: EN <strong>1000 ms</strong> / HI <strong>783 ms</strong> · Model <code>starter/models/unified.joblib</code> ·
+      All-time best handout: EN <strong>1000 ms</strong> / HI <strong>781 ms</strong> · Model <code>starter/models/unified.joblib</code> ·
       Open in a browser for charts.
     </footer>
   </div>
   <script>
     const labels = ["Silence","Weak","INVALID\nin-sample","OOF\nhonest","Protocol\nfrozen","★ Ship\nhandout"];
     const enDelay = [1600,1190,298,1229,1300,1000];
-    const hiDelay = [850,850,398,840,1600,783];
+    const hiDelay = [850,850,398,840,1600,781];
     const enAuc = [0.506,0.597,0.989,0.697,0.710,0.838];
     const hiAuc = [0.516,0.634,0.981,0.744,0.544,0.864];
     const base = {

@@ -4,7 +4,7 @@
 cd /Users/shrianshjaiswal/plivo-ml-2024me10194/starter
 ```
 
-## Current best ship — EN 1000 / HI 783
+## Current best ship — EN 1000 / HI 781
 
 ```bash
 python3 predict.py --data_dir ../eot_data/english --out predictions.csv

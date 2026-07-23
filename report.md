@@ -1,13 +1,13 @@
 # End-of-Turn Detection — Situation Report
 
 **Updated:** 2026-07-23 ~22:52  
-**Ship:** EN **1000 ms** / HI **783 ms** (`models/unified.joblib`)
+**Ship:** EN **1000 ms** / HI **781 ms** (`models/unified.joblib`)
 
 ## Best-of records
 
 | Record | Score | Status |
 |--------|------:|--------|
-| ★ Combined handout (shipped) | EN **1000** / HI **783** | Current |
+| ★ Combined handout (shipped) | EN **1000** / HI **781** | Current |
 | Best HI alone | **772** | Tried; rejected (EN→1030) |
 | Best HI honest | **840** | OOF |
 | Best EN honest freeze | **1300** | Protocol |
