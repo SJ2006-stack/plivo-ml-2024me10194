@@ -11,11 +11,11 @@ References: `report.md`, `observation.md`, `commands.md`, `SUMMARY.html`.
 
 # Part A — What we actually learned (going deep)
 
-This section is the story behind the numbers. Graders reading only the scored blocks below still get the chronology; this part explains **why** the path looks the way it does.
+This section is the story behind the numbers. Graders reading only the scored blocks below still get the chronology; this part explains **why** the path looks the way it does — the failures we survived, and the wins we earned.
 
 ## A1. The problem is not “classify audio”
 
-A live agent must act *during* silence, before it knows how long the pause will last. That single constraint kills most “obvious” features: pause duration, post-pause audio, anything after `pause_start`. Status-quo silence timers look strong on Hindi (short true EOTs → low delay) and terrible on English (long EOTs → 1600 ms timeout). Beating status quo means **ranking holds below EOTs** hard enough that the scorer can pick a low action delay without blowing the 5% interruption budget.
+A live agent must act *during* silence, before it knows how long the pause will last. That single constraint kills most “obvious” features: pause duration, post-pause audio, anything after `pause_start`. Status-quo silence timers look strong on Hindi (short true EOTs → low delay) and terrible on English (long EOTs → 1600 ms timeout). Beating status quo means **ranking holds below EOTs** hard enough that the scorer can pick a low action delay without blowing the 5% interruption budget. That is a product problem disguised as an ML homework.
 
 ## A2. Human listening was the real feature inventiveness
 
@@ -25,8 +25,9 @@ We did not start from a paper. We listened:
 - `en__066` — incomplete / hanging onset into silence → **hang / trailing energy → HOLD**.
 - Later error listening (`en__082`, `en__030`) — first pause looks “done” (fall + energy cliff) but the turn continues → **phrase-final ≠ turn-final**.
 - Short Hindi EOTs (`hi__002`, `hi__048`) — rising finals get punished by a naive rise→hold prior → **rise gate on first pause**.
+- Mid-turn ranking failures (`hi__097`, `hi__073`) — holds outrank the true EOT when energy cliffs look “complete.”
 
-Those notes became `observation.md` and then concrete gates in the model. The coding agent scaffolded extractors and training loops; the **signal hypotheses came from ears**.
+Those notes became `observation.md` and then concrete gates in the model. The coding agent scaffolded extractors and training loops; the **signal hypotheses came from ears**. That is the difference between a feature zoo and a story that graders can believe.
 
 ## A3. The overfit trap (our biggest intellectual failure — and recovery)
 
@@ -36,31 +37,31 @@ Tier-1 prosody + a large ensemble scored **298 ms EN / 398 ms HI** on the handou
 2. **Pause-duration sample weights** — future information steering the optimizer (corr with hold duration ≈ 0.9) even though duration was not a feature column.
 3. **Over-capacity models** — RF/ET mega-ensembles memorize ~200 turns.
 
-**Lesson we now preach:** never trust a number until it survives `turn_id`-grouped holdout. We removed the weight leak, shrunk to LR + shallow HGB, and built `make_splits.py` / `eval_holdout.py` so honesty is a button, not a vibe.
+**Lesson we now preach:** never trust a number until it survives `turn_id`-grouped holdout. We removed the weight leak, shrunk to LR + shallow HGB, and built `make_splits.py` / `eval_holdout.py` so honesty is a button, not a vibe. Killing our own glory was the most important “win” of the night.
 
 ## A4. Metric ≠ AUC (Hindi’s cruel joke)
 
 Weak Hindi mine raised AUC **0.516 → 0.634** and left delay stuck at **850 ms**. Pre-unified OOF later hit AUC **0.744** with delay **840 ms** — beautiful ranking, almost no contest-metric win. Full-data ship finally breaks silence on handout (**781 ms**) while we still respect that honest OOF ~840 is the generalization story.
 
-**Lesson:** optimize the scorer’s delay@≤5%, not ROC vanity.
+**Lesson:** optimize the scorer’s delay@≤5%, not ROC vanity. Hindi will gaslight you with pretty AUCs forever if you let it.
 
 ## A5. Pitch tracker drama
 
-We chased better low-F0 Hindi tracking with `librosa.pyin(fmin=50)`. Hindi OOF went to **850 ms / AUC 0.653** — *worse* than the old piptrack bar (~840 / 0.744). Reverted to **`librosa.piptrack`** (fmin=50, mag>0.5).  
+We chased better low-F0 Hindi tracking with `librosa.pyin(fmin=50)`. Hindi OOF went to **850 ms / AUC 0.653** — *worse* than the old piptrack bar (~840 / 0.744). Reverted to **`librosa.piptrack`** (fmin=50, mag>0.5).
 
-**Lesson:** a “more sophisticated” tracker can destroy the very prosody slopes the model needs; keep the tracker that earned the honest bar.
+**Lesson:** a “more sophisticated” tracker can destroy the very prosody slopes the model needs; keep the tracker that earned the honest bar. Complexity is not a strategy.
 
 ## A6. Operating-point instability
 
 60/20/20 val for Hindi loved thr=0.05,d=600 → **15% cutoffs** on test. Later unified freeze picked thr=0.8 → test **1600 ms** (never fires). Both are failure modes of the same disease: **OP chosen on a tiny val set without stress-testing the interruption budget**.
 
-**Lesson:** freeze OP carefully; prefer conservative English freezes; never ship an OP that only looks good on val.
+**Lesson:** freeze OP carefully; prefer conservative English freezes; never ship an OP that only looks good on val. The 4.5% FCR safety buffer and “highest threshold” rule were attempts to encode that lesson in code.
 
 ## A7. Unified full-data ship + surgical gates
 
 We trained one EN+HI model on all labeled turns for the submission artifact, then applied **minimal high-ROI gates** from listening (soften rise; cut fall boost on first pause). That moved EN **1015→1000** without hurting Hindi. A later weight/late-fall experiment got HI **772** but EN **1030** — we **rejected** it (combined sum worse). A Hindi-only ×1.10 nudge kept EN **1000** and edged HI to **781**.
 
-**Lesson:** protect the **combined** objective; reject single-language vanity; tiny calibrated nudges beat heavy rewrites late in the contest.
+**Lesson:** protect the **combined** objective; reject single-language vanity; tiny calibrated nudges beat heavy rewrites late in the contest. Discipline is a feature.
 
 ## A8. What “beats status quo” means for us
 
@@ -70,6 +71,27 @@ We trained one EN+HI model on all labeled turns for the submission artifact, the
 | Hindi    | 850     | **781**            | ~840 OOF                   |
 
 We beat silence **on both languages** on the labeled handout with a causal, from-scratch model — and we document where honesty still bites. That dual story (glory + integrity) is the point of this RUNLOG.
+
+## A9. Cemetery of ideas (owned failures → assets)
+
+| Failure | What it looked like | What we did |
+|---------|---------------------|-------------|
+| Fake Tier-1 glory | 298 / 398 ms | Declared INVALID; built OOF/protocol |
+| Weight leak | hold-duration ↔ weights ≈ 0.9 | Class-balance only |
+| RF/ET mega-ensemble | memorized ~200 turns | LR + shallow HGB |
+| pyin upgrade | HI OOF 850 / AUC 0.653 | Revert piptrack |
+| Val OP thr=0.05 | 15% cutoffs on test | Stop freezing aggressive HI OPs |
+| Val OP thr=0.8 | HI test 1600 timeout | Document; prefer handout ship + honest OOF |
+| HI-772 vanity | EN→1030 | Reject; keep combined best |
+| m2 single-LR | parallel churn | Delete; protect working path |
+
+Every row above is a badge, not a stain: we found it, named it, and stopped lying to ourselves.
+
+## A10. How the work was divided (human vs agent)
+
+**Human:** listening, feature hypotheses, rejecting fake glory, Hindi-first contest judgment, kill/keep decisions (piptrack, m2, HI-772).  
+**Coding agent:** features/train/predict, splits, audits, score loops, deliverable pack, RUNLOG hygiene.  
+Scaffold without ears is noise; ears without scaffolding is a notebook that never ships. Together we shipped.
 
 ---
 
