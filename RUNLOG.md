@@ -250,6 +250,32 @@ Why: best HI-alone (**772**) but English regresses; combined sum worse (1802 vs 
 Changed: if Hindi and not (first-pause & rise>fall+5), multiply `p_eot` by 1.10 (no retrain).  
 Why: free **−2 ms** Hindi with English untouched. **Current ship.**
 
+## 33. Final depth pass — isolated post-process gate battery (deliverables untouched)
+
+Last deed before freeze: we did **not** throw another mega-retrain at the wall. We ran a controlled A/B of every high-ROI post-process idea **alone** (never stacked), on the same cached features + `unified.joblib`, scoring **EN handout / HI handout / HI 5-fold OOF** each time. Script: `starter/exp_gates.py` → `starter/_exp_gates_out/` (scratch only; **`deleieverable/` not modified**).
+
+| Exp (alone) | EN handout | HI handout | HI OOF |
+|-------------|----------:|----------:|-------:|
+| 00 shipped baseline (#32) | **1000** | **781** | **850** |
+| 01 raw ensemble | 950 | 793 | 850 |
+| 02 soft rise on HI short/single | 950 | 793 | 850 |
+| 03 stronger first-pause “not done” | 1015↑ | 793 | 850 |
+| 04 HI nudge ×1.05 | 950 | 755 | 850 |
+| 05 HI nudge ×1.08 | 950 | 736 | 850 |
+| 06 HI nudge ×1.12 | 950 | 783 | 850 |
+| 07 HI fall-boost + first-cut | 950 | 800 | 850 |
+| 08 isotonic on val→raw | 1155↑ | 850 | **925** worse |
+
+**What this depth bought us (why it matters more than another fake 50 ms):**
+
+1. **We separated the vanity traps.** Handout-only ×1.08 looked gorgeous (EN 950 / HI 736) — exactly the kind of number that would have shipped on a weaker team. **OOF stayed 850.** We refused to overwrite #32.
+2. **We proved stacking was the wrong instinct.** Stronger first-pause damp *hurt* English. Isotonic *hurt* everything. Soft-rise-on-short did nothing beyond raw. The only “free” HI nudges that moved handout still **failed the honest bar**.
+3. **We closed the loop the way the contest asks:** listen → hypothesize gate → isolate → score handout **and** OOF → keep or reject. Same discipline as #31 (reject 772 when EN blew up).
+4. **Ship stands:** EN **1000** / HI **781** with first-pause gates + safe ×1.10 (#29–#32). Honest Hindi generalization story remains OOF ~**840–850**, not handout 736.
+
+Changed: exhaustive one-at-a-time gate audit; no deliverable diff.  
+Why: finish by going **deeper**, not louder — earn the freeze with evidence that we looked under every tempting rock and left the ship alone when OOF said no.
+
 ---
 
 # Part C — Best-of board & integrity table
