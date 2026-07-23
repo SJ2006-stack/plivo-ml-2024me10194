@@ -1,0 +1,10 @@
+GATE EXPERIMENTS — each alone; deliverables untouched
+00_shipped_baseline: EN=1000 HI=781 sum=1781 OOF_HI=850 OOF_AUC=0.676
+01_raw_ensemble: EN=950 HI=793 sum=1743 OOF_HI=850 OOF_AUC=0.672
+02_soft_rise_hi_short: EN=950 HI=793 sum=1743 OOF_HI=850 OOF_AUC=0.672
+03_strong_first_not_done: EN=1015 HI=793 sum=1808 OOF_HI=850 OOF_AUC=0.673
+04_hi_nudge_1.05: EN=950 HI=755 sum=1704 OOF_HI=850 OOF_AUC=0.672
+05_hi_nudge_1.08: EN=950 HI=736 sum=1686 OOF_HI=850 OOF_AUC=0.672
+06_hi_nudge_1.12: EN=950 HI=783 sum=1733 OOF_HI=850 OOF_AUC=0.672
+07_hi_fallboost_firstcut: EN=950 HI=800 sum=1750 OOF_HI=850 OOF_AUC=0.678
+08_isotonic_on_raw: EN=1155 HI=850 sum=2005 OOF_HI=925 OOF_AUC=0.697
