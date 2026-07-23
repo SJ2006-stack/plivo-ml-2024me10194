@@ -1,0 +1,46 @@
+{
+  "lang": "hindi",
+  "splits_dir": "/Users/shrianshjaiswal/plivo-ml-2024me10194/eot_splits/hindi",
+  "frozen_model": "/Users/shrianshjaiswal/plivo-ml-2024me10194/starter/models/unified.joblib",
+  "retrained": false,
+  "val": {
+    "latency": 1.5850000000000004,
+    "cutoff": 0.0,
+    "threshold": 0.8,
+    "delay": 1.45,
+    "auc": 0.6282608695652174,
+    "n_turns": 20,
+    "n_pauses": 43,
+    "fcr_cap": 0.045,
+    "feasible_thresholds": [
+      0.5,
+      0.6,
+      0.7,
+      0.8
+    ]
+  },
+  "test_frozen_op": {
+    "latency": 1.6000000000000003,
+    "cutoff": 0.0,
+    "threshold": 0.8,
+    "delay": 1.45,
+    "auc": 0.5444444444444444,
+    "n_turns": 20,
+    "n_pauses": 47
+  },
+  "val_pred": "/Users/shrianshjaiswal/plivo-ml-2024me10194/starter/pred_hi_val.csv",
+  "test_pred": "/Users/shrianshjaiswal/plivo-ml-2024me10194/starter/pred_hi_test.csv",
+  "op_rule": {
+    "val_thresholds": [
+      0.5,
+      0.6,
+      0.7,
+      0.8
+    ],
+    "fcr_cap": 0.045,
+    "pick": "highest_threshold_with_fcr_le_cap",
+    "test": "frozen_op_only_no_resweep"
+  },
+  "n_delays": 31,
+  "n_thresh_legacy_score_py": 19
+}

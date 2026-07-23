@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EOT Detection — Summary</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f3efe6; --ink: #1c1914; --muted: #5c564c; --line: #d4cdc0;
+      --card: #fffcf7; --en: #1f6f5b; --hi: #b45309; --bad: #9f1239;
+      --ok: #166534; --accent: #0f3d4c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Source Sans 3", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 10% -10%, #e8f0ec 0%, transparent 55%),
+        radial-gradient(700px 380px at 100% 0%, #f6e7d4 0%, transparent 50%),
+        var(--bg);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    header { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    .kicker { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    h1 { font-family: "IBM Plex Serif", Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.55rem); line-height: 1.15; margin: 0.35rem 0 0.75rem; }
+    .lede { color: var(--muted); max-width: 64ch; margin: 0; }
+    h2 { font-family: "IBM Plex Serif", Georgia, serif; font-size: 1.35rem; margin: 2.4rem 0 0.85rem; border-top: 1px solid var(--line); padding-top: 1.4rem; }
+    h3 { font-size: 1.02rem; margin: 1.4rem 0 0.5rem; }
+    .muted { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin: 1rem 0 1.5rem; }
+    .stat { background: var(--card); border: 1px solid var(--line); padding: 0.95rem 1rem; }
+    .stat .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .stat .value { font-size: 1.55rem; font-weight: 700; margin-top: 0.2rem; }
+    .stat .sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.15rem; }
+    .ok { color: var(--ok); } .warn { color: var(--hi); } .bad { color: var(--bad); }
+    .chart-box { background: var(--card); border: 1px solid var(--line); padding: 1rem 1rem 0.5rem; margin: 1rem 0 1.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; background: var(--card); border: 1px solid var(--line); margin: 0.75rem 0 1.25rem; }
+    th, td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .tag { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.12rem 0.4rem; border: 1px solid currentColor; }
+    .tag.invalid { color: var(--bad); } .tag.trust { color: var(--ok); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+    .panel { background: var(--card); border: 1px solid var(--line); padding: 1rem 1.1rem; }
+    .panel h3 { margin-top: 0; }
+    ul.tight li { margin: 0.25rem 0; }
+    footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88rem; }
+    code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.88em; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="kicker">Plivo ML · EOT · all-time best ship · deleieverable pack</div>
+      <h1>Causal unified prosody endpointing — EN 1000 ms / HI 783 ms on handout</h1>
+      <p class="lede">
+        From-scratch pause classifier: <code>p_eot</code> from audio only up to <code>pause_start</code>.
+        Current best ship is full-data <strong>unified EN+HI</strong> LR+HGB with <code>piptrack</code>
+        and light first-pause gates. One combined <code>predictions.csv</code> covers both languages (496 rows).
+      </p>
+    </header>
+
+    <div class="grid">
+      <div class="stat">
+        <div class="label">★ Handout EN (current best)</div>
+        <div class="value ok">1000 ms</div>
+        <div class="sub">AUC 0.838 · acc@0.5 ≈ 0.77 · vs silence 1600</div>
+      </div>
+      <div class="stat">
+        <div class="label">★ Handout HI (current best)</div>
+        <div class="value ok">783 ms</div>
+        <div class="sub">AUC 0.864 · beats silence 850 · in-sample</div>
+      </div>
+      <div class="stat">
+        <div class="label">Best honest HI (OOF)</div>
+        <div class="value warn">840 ms</div>
+        <div class="sub">AUC 0.744 · trusted generalization</div>
+      </div>
+      <div class="stat">
+        <div class="label">Deliverables</div>
+        <div class="value">5 / 5</div>
+        <div class="sub">in <code>deleieverable/</code></div>
+      </div>
+    </div>
+
+    <h2>1. Problem &amp; metric</h2>
+    <p>
+      At each pause: is the user <strong>done</strong> (EOT) or mid-thought (<strong>hold</strong>)?
+      Official score = <strong>mean response delay (ms) at ≤5% interrupted turns</strong> (lower better).
+      Hidden test is mostly Hindi. No pretrained ASR/VAD.
+    </p>
+
+    <h2>2. Solution</h2>
+    <h3>Causality</h3>
+    <p>Features use only <code>x[:pause_start]</code>. Never pause duration / post-pause audio (also removed from sample weights after a leak was found).</p>
+    <h3>Signal</h3>
+    <ul class="tight">
+      <li>F0 via <code>librosa.piptrack</code> (fmin=50; pyin abandoned after HI OOF regression)</li>
+      <li>Energy decay, final lengthening, relative final pitch (fall/rise), spectral shape, IPI / pause_index</li>
+      <li>First-pause gates: soften rise penalty; cut fall boost when <code>pause_index==0</code></li>
+    </ul>
+    <h3>Model &amp; inference</h3>
+    <p>
+      Unified LR + shallow HGB on full EN+HI → <code>starter/models/unified.joblib</code>.
+      <code>predict.py --data_dir &lt;folder&gt; --out predictions.csv</code> loads the saved model (no refit)
+      and works on never-seen folders with the same labels schema. Columns: <code>turn_id,pause_index,p_eot</code>.
+    </p>
+
+    <h2>3. Results &amp; graphs</h2>
+    <div class="chart-box"><canvas id="delayChart" height="140"></canvas></div>
+    <div class="chart-box"><canvas id="aucChart" height="120"></canvas></div>
+    <table>
+      <thead><tr><th>Protocol</th><th>EN</th><th>HI</th><th>Trust</th></tr></thead>
+      <tbody>
+        <tr><td>Silence</td><td>1600</td><td>850</td><td><span class="tag trust">Yes</span></td></tr>
+        <tr><td>Weak starter</td><td>1190</td><td>850</td><td><span class="tag trust">Yes</span></td></tr>
+        <tr><td>In-sample Tier-1 (INVALID)</td><td>298</td><td>398</td><td><span class="tag invalid">No</span></td></tr>
+        <tr><td>Pre-unified 5-fold OOF</td><td>1229</td><td><strong>840</strong></td><td><span class="tag trust">Best honest HI</span></td></tr>
+        <tr><td>Unified protocol @ val-frozen</td><td>1300</td><td>1600</td><td><span class="tag trust">Yes</span></td></tr>
+        <tr><td>★ Full-data unified + gates</td><td><strong>1000</strong></td><td><strong>783</strong></td><td><span class="tag invalid">In-sample ship</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. Why it beats status quo</h2>
+    <div class="two-col">
+      <div class="panel">
+        <h3>English</h3>
+        <p>Silence waits <strong>1600 ms</strong>. Our best handout ship answers at <strong>1000 ms</strong> with usable ranking from causal prosody — hundreds of ms sooner inside the 5% interruption budget.</p>
+      </div>
+      <div class="panel">
+        <h3>Hindi</h3>
+        <p>Silence is <strong>850 ms</strong>. Handout ship reaches <strong>783 ms</strong> (AUC 0.86). Honest OOF best is <strong>~840</strong> — still the generalization target. We beat status quo on English delay and Hindi handout delay/ranking; honest Hindi freeze remains the open gap.</p>
+      </div>
+    </div>
+
+    <h2>5. Human vs coding agent</h2>
+    <div class="two-col">
+      <div class="panel">
+        <h3>Human</h3>
+        <ul class="tight">
+          <li>Listening (<code>observation.md</code>) → pitch fall, rate, hang cues</li>
+          <li>Error analysis → first-pause / rise gates</li>
+          <li>Rejected INVALID 298/398; chose piptrack + unified full-data ship</li>
+          <li>Directed deliverable pack + combined predictions CSV</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Coding agent</h3>
+        <ul class="tight">
+          <li>Built features / train / predict / holdout tooling</li>
+          <li>Diagnosed weight leak + overfit; wrote RUNLOG format</li>
+          <li>Trained unified model; regenerated preds; packed <code>deleieverable/</code></li>
+          <li>Authored this SUMMARY + NOTES from scored runs</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>6. Summary of MD files</h2>
+    <table>
+      <thead><tr><th>File</th><th>Takeaway</th></tr></thead>
+      <tbody>
+        <tr><td><code>NOTES.md</code></td><td>≤10 sentences: piptrack+unified signal; Hindi/honest fails; one more day = OP + gates + OOF-only claims.</td></tr>
+        <tr><td><code>RUNLOG.md</code></td><td>Every run: score + 1–2 lines changed/why through #30 (combined deliverable pack).</td></tr>
+        <tr><td><code>report.md</code></td><td>Situation report for the full-data unified ship.</td></tr>
+        <tr><td><code>observation.md</code></td><td>Human listening → feature hypotheses + error cases.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>7. Deliverable checklist (this folder)</h2>
+    <ol>
+      <li><code>SUMMARY.html</code> — this file</li>
+      <li><code>predict.py</code> — <code>python predict.py --data_dir &lt;folder&gt; --out predictions.csv</code></li>
+      <li><code>predictions.csv</code> — <strong>both</strong> languages in one file (496 rows)</li>
+      <li><code>RUNLOG.md</code> — graded scoring log</li>
+      <li><code>NOTES.md</code> — ≤10 sentences</li>
+    </ol>
+
+    <footer>
+      All-time best handout: EN <strong>1000 ms</strong> / HI <strong>783 ms</strong> · Model <code>starter/models/unified.joblib</code> ·
+      Open in a browser for charts.
+    </footer>
+  </div>
+  <script>
+    const labels = ["Silence","Weak","INVALID\nin-sample","OOF\nhonest","Protocol\nfrozen","★ Ship\nhandout"];
+    const enDelay = [1600,1190,298,1229,1300,1000];
+    const hiDelay = [850,850,398,840,1600,783];
+    const enAuc = [0.506,0.597,0.989,0.697,0.710,0.838];
+    const hiAuc = [0.516,0.634,0.981,0.744,0.544,0.864];
+    const base = {
+      responsive: true,
+      plugins: { legend: { position: "top" }, title: { display: true, color: "#1c1914", font: { size: 14, weight: "600" } } },
+      scales: { x: { ticks: { color: "#5c564c" } }, y: { ticks: { color: "#5c564c" }, grid: { color: "#e8e2d6" } } }
+    };
+    new Chart(document.getElementById("delayChart"), {
+      type: "bar",
+      data: { labels, datasets: [
+        { label: "English delay (ms)", data: enDelay, backgroundColor: "rgba(31,111,91,0.75)", borderColor: "#1f6f5b", borderWidth: 1 },
+        { label: "Hindi delay (ms)", data: hiDelay, backgroundColor: "rgba(180,83,9,0.7)", borderColor: "#b45309", borderWidth: 1 }
+      ]},
+      options: { ...base, plugins: { ...base.plugins, title: { ...base.plugins.title, text: "Mean response delay @ ≤5% cutoffs (lower better)" } } }
+    });
+    new Chart(document.getElementById("aucChart"), {
+      type: "line",
+      data: { labels, datasets: [
+        { label: "English AUC", data: enAuc, borderColor: "#1f6f5b", tension: 0.2, fill: false },
+        { label: "Hindi AUC", data: hiAuc, borderColor: "#b45309", tension: 0.2, fill: false }
+      ]},
+      options: { ...base, plugins: { ...base.plugins, title: { ...base.plugins.title, text: "Hold vs EOT AUC" } },
+        scales: { ...base.scales, y: { min: 0.45, max: 1.0, ticks: { color: "#5c564c" }, grid: { color: "#e8e2d6" } } } }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+HARD RULE — Action 2: Stop retraining. Use these frozen models.
+
+models/english.joblib
+models/hindi.joblib
+models/default.joblib
+
+Do NOT run train.py (it will refuse unless --force-retrain).
+Do NOT overwrite these files.
+
+Best honest Hindi bar was pre-pyin 5-fold OOF: AUC ~0.744 / ~840 ms
+(see RUNLOG.md). Prefer predict.py + val-only threshold freeze.
+
+If you need the literal pre-pyin binary and these were overwritten after
+pyin experiments, restore from Time Machine / backup — there is no git
+history for *.joblib in this workspace.
